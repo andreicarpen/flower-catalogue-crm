@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Flower, Distributor, Category } from "@/types";
 import EditFlowerDialog from "./EditFlowerDialog";
+import { Pencil } from "lucide-react";
 
 interface FlowerCardProps {
   flower: Flower;
@@ -38,11 +39,11 @@ const FlowerCard = ({ flower, distributor, category, onUpdateQuantity }: FlowerC
           <div className="flex justify-between items-center mt-2">
             <p className="text-sm text-gray-600">Cantitate: {flower.quantity}</p>
             <Button
-              variant="outline"
-              size="sm"
+              variant="ghost"
+              size="icon"
               onClick={() => setEditDialogOpen(true)}
             >
-              Editează
+              <Pencil className="h-4 w-4" />
             </Button>
           </div>
         </div>

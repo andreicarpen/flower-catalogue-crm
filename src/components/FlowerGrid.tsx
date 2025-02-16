@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import FlowerCard from "./FlowerCard";
 import { Flower, Distributor, Category } from "@/types";
@@ -8,7 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Filter } from "lucide-react";
 
 interface FlowerGridProps {
   flowers: Flower[];
@@ -21,12 +28,10 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
   const [selectedDistributor, setSelectedDistributor] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
-  const isMobile = useIsMobile();
 
   const filteredAndSortedFlowers = useMemo(() => {
     let result = [...flowers];
 
-    // Apply filters
     if (selectedDistributor !== "all") {
       result = result.filter((f) => f.distributorId === selectedDistributor);
     }
@@ -34,7 +39,6 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
       result = result.filter((f) => f.categoryId === selectedCategory);
     }
 
-    // Apply sorting
     result.sort((a, b) => {
       switch (sortBy) {
         case "name":
@@ -58,47 +62,68 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
   }, [flowers, selectedDistributor, selectedCategory, sortBy, distributors, categories]);
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-2 sm:p-6 animate-slideUp">
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-        <Select onValueChange={setSelectedDistributor} value={selectedDistributor}>
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue placeholder="Filtrează după distribuitor" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toți distribuitorii</SelectItem>
-            {distributors.map((distributor) => (
-              <SelectItem key={distributor.id} value={distributor.id}>
-                {distributor.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="space-y-4 sm:space-y-6 animate-slideUp">
+      <div className="flex justify-end">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Filter className="h-4 w-4" />
+              Filtre
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="space-y-4 p-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Distribuitori</label>
+                <Select onValueChange={setSelectedDistributor} value={selectedDistributor}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Toți distribuitorii" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toți distribuitorii</SelectItem>
+                    {distributors.map((distributor) => (
+                      <SelectItem key={distributor.id} value={distributor.id}>
+                        {distributor.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-        <Select onValueChange={setSelectedCategory} value={selectedCategory}>
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue placeholder="Filtrează după categorie" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toate categoriile</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Categorii</label>
+                <Select onValueChange={setSelectedCategory} value={selectedCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Toate categoriile" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toate categoriile</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-        <Select onValueChange={setSortBy} value={sortBy}>
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue placeholder="Sortează după" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="name">Nume</SelectItem>
-            <SelectItem value="distributor">Distribuitor</SelectItem>
-            <SelectItem value="category">Categorie</SelectItem>
-            <SelectItem value="date">Data adăugării</SelectItem>
-          </SelectContent>
-        </Select>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Sortare</label>
+                <Select onValueChange={setSortBy} value={sortBy}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sortează după" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Nume</SelectItem>
+                    <SelectItem value="distributor">Distribuitor</SelectItem>
+                    <SelectItem value="category">Categorie</SelectItem>
+                    <SelectItem value="date">Data adăugării</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">

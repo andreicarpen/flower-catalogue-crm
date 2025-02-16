@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Flower, Distributor, Category } from "@/types";
 import FlowerGrid from "@/components/FlowerGrid";
@@ -6,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Menu, Plus, Filter } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -64,19 +72,34 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className={`flex ${isMobile ? 'flex-col gap-4' : 'justify-between items-center'}`}>
-            <h1 className="font-serif text-xl sm:text-2xl font-semibold text-gray-900">Inventar Flori</h1>
-            <div className="flex flex-wrap gap-2 sm:gap-4">
-              <Link to="/distributors" className="flex-1 sm:flex-none">
-                <Button variant="outline" className="w-full sm:w-auto">Gestionare Distribuitori</Button>
-              </Link>
-              <Link to="/categories" className="flex-1 sm:flex-none">
-                <Button variant="outline" className="w-full sm:w-auto">Gestionare Categorii</Button>
-              </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                <Link to="/distributors">
+                  <DropdownMenuItem className="cursor-pointer">
+                    Distribuitori
+                  </DropdownMenuItem>
+                </Link>
+                <Link to="/categories">
+                  <DropdownMenuItem className="cursor-pointer">
+                    Categorii
+                  </DropdownMenuItem>
+                </Link>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <div className="flex items-center gap-2">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="w-full sm:w-auto bg-sage-600 hover:bg-sage-700">Adaugă Floare Nouă</Button>
+                  <Button className="bg-sage-600 hover:bg-sage-700">
+                    <Plus className="h-4 w-4 mr-1" /> Adaugă
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[600px] w-[95vw] sm:w-auto mx-4">
                   <AddFlowerForm
