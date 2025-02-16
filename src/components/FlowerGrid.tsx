@@ -17,18 +17,18 @@ interface FlowerGridProps {
 }
 
 const FlowerGrid = ({ flowers, distributors, categories }: FlowerGridProps) => {
-  const [selectedDistributor, setSelectedDistributor] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedDistributor, setSelectedDistributor] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
 
   const filteredAndSortedFlowers = useMemo(() => {
     let result = [...flowers];
 
     // Apply filters
-    if (selectedDistributor) {
+    if (selectedDistributor !== "all") {
       result = result.filter((f) => f.distributorId === selectedDistributor);
     }
-    if (selectedCategory) {
+    if (selectedCategory !== "all") {
       result = result.filter((f) => f.categoryId === selectedCategory);
     }
 
@@ -63,7 +63,7 @@ const FlowerGrid = ({ flowers, distributors, categories }: FlowerGridProps) => {
             <SelectValue placeholder="Filter by distributor" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All distributors</SelectItem>
+            <SelectItem value="all">All distributors</SelectItem>
             {distributors.map((distributor) => (
               <SelectItem key={distributor.id} value={distributor.id}>
                 {distributor.name}
@@ -77,7 +77,7 @@ const FlowerGrid = ({ flowers, distributors, categories }: FlowerGridProps) => {
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All categories</SelectItem>
+            <SelectItem value="all">All categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}
