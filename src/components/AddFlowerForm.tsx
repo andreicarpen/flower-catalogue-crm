@@ -44,8 +44,8 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
 
     if (!name || !imagePreview || !distributorId || !categoryId || !quantity) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
+        title: "Eroare",
+        description: "Vă rugăm completați toate câmpurile",
         variant: "destructive",
       });
       return;
@@ -70,17 +70,17 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
     }
 
     toast({
-      title: "Success",
-      description: "Flower added successfully",
+      title: "Succes",
+      description: "Floare adăugată cu succes",
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 max-w-xl mx-auto animate-slideUp">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-xl mx-auto">
       <div className="space-y-4">
         <div>
           <Input
-            placeholder="Flower name"
+            placeholder="Nume floare"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full"
@@ -88,7 +88,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
         </div>
 
         <div className="space-y-4">
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               type="button"
               variant="outline"
@@ -96,7 +96,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload className="w-4 h-4 mr-2" />
-              Choose Image
+              Alege Imagine
             </Button>
             <Button
               type="button"
@@ -110,7 +110,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
               }}
             >
               <Camera className="w-4 h-4 mr-2" />
-              Take Photo
+              Fă o Poză
             </Button>
           </div>
           <input
@@ -124,7 +124,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
             <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
               <img
                 src={imagePreview}
-                alt="Preview"
+                alt="Previzualizare"
                 className="h-full w-full object-cover"
               />
             </div>
@@ -134,7 +134,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
         <div>
           <Select onValueChange={setDistributorId} value={distributorId}>
             <SelectTrigger>
-              <SelectValue placeholder="Select distributor" />
+              <SelectValue placeholder="Selectează distribuitor" />
             </SelectTrigger>
             <SelectContent>
               {distributors.map((distributor) => (
@@ -149,7 +149,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
         <div>
           <Select onValueChange={setCategoryId} value={categoryId}>
             <SelectTrigger>
-              <SelectValue placeholder="Select category" />
+              <SelectValue placeholder="Selectează categoria" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
@@ -164,7 +164,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
         <div>
           <Input
             type="number"
-            placeholder="Quantity"
+            placeholder="Cantitate"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             min="0"
@@ -174,7 +174,7 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
       </div>
 
       <Button type="submit" className="w-full bg-sage-600 hover:bg-sage-700">
-        Add Flower
+        Adaugă Floare
       </Button>
     </form>
   );

@@ -28,8 +28,8 @@ const EditFlowerDialog = ({ flower, open, onOpenChange, onUpdate }: EditFlowerDi
     
     if (isNaN(newQuantity) || newQuantity < 0) {
       toast({
-        title: "Error",
-        description: "Please enter a valid quantity",
+        title: "Eroare",
+        description: "Vă rugăm introduceți o cantitate validă",
         variant: "destructive",
       });
       return;
@@ -38,16 +38,16 @@ const EditFlowerDialog = ({ flower, open, onOpenChange, onUpdate }: EditFlowerDi
     onUpdate(flower.id, newQuantity);
     onOpenChange(false);
     toast({
-      title: "Success",
-      description: "Flower quantity updated successfully",
+      title: "Succes",
+      description: "Cantitatea a fost actualizată cu succes",
     });
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="w-[95vw] sm:w-auto max-w-md mx-4">
         <DialogHeader>
-          <DialogTitle>Update Quantity - {flower.name}</DialogTitle>
+          <DialogTitle>Actualizare Cantitate - {flower.name}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -56,10 +56,10 @@ const EditFlowerDialog = ({ flower, open, onOpenChange, onUpdate }: EditFlowerDi
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               min="0"
-              placeholder="New quantity"
+              placeholder="Cantitate nouă"
             />
           </div>
-          <Button type="submit" className="w-full">Update Quantity</Button>
+          <Button type="submit" className="w-full">Actualizează Cantitatea</Button>
         </form>
       </DialogContent>
     </Dialog>

@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import FlowerCard from "./FlowerCard";
 import { Flower, Distributor, Category } from "@/types";
@@ -9,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FlowerGridProps {
   flowers: Flower[];
@@ -21,6 +21,7 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
   const [selectedDistributor, setSelectedDistributor] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
+  const isMobile = useIsMobile();
 
   const filteredAndSortedFlowers = useMemo(() => {
     let result = [...flowers];
@@ -57,14 +58,14 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
   }, [flowers, selectedDistributor, selectedCategory, sortBy, distributors, categories]);
 
   return (
-    <div className="space-y-6 p-6 animate-slideUp">
-      <div className="flex flex-wrap gap-4">
+    <div className="space-y-4 sm:space-y-6 p-2 sm:p-6 animate-slideUp">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
         <Select onValueChange={setSelectedDistributor} value={selectedDistributor}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by distributor" />
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue placeholder="Filtrează după distribuitor" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All distributors</SelectItem>
+            <SelectItem value="all">Toți distribuitorii</SelectItem>
             {distributors.map((distributor) => (
               <SelectItem key={distributor.id} value={distributor.id}>
                 {distributor.name}
@@ -74,11 +75,11 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
         </Select>
 
         <Select onValueChange={setSelectedCategory} value={selectedCategory}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by category" />
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue placeholder="Filtrează după categorie" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
+            <SelectItem value="all">Toate categoriile</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}
@@ -88,19 +89,19 @@ const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: Flo
         </Select>
 
         <Select onValueChange={setSortBy} value={sortBy}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Sort by" />
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue placeholder="Sortează după" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="name">Name</SelectItem>
-            <SelectItem value="distributor">Distributor</SelectItem>
-            <SelectItem value="category">Category</SelectItem>
-            <SelectItem value="date">Date added</SelectItem>
+            <SelectItem value="name">Nume</SelectItem>
+            <SelectItem value="distributor">Distribuitor</SelectItem>
+            <SelectItem value="category">Categorie</SelectItem>
+            <SelectItem value="date">Data adăugării</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
         {filteredAndSortedFlowers.map((flower) => (
           <FlowerCard
             key={flower.id}
