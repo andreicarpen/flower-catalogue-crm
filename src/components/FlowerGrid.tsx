@@ -14,9 +14,10 @@ interface FlowerGridProps {
   flowers: Flower[];
   distributors: Distributor[];
   categories: Category[];
+  onUpdateQuantity: (id: string, quantity: number) => void;
 }
 
-const FlowerGrid = ({ flowers, distributors, categories }: FlowerGridProps) => {
+const FlowerGrid = ({ flowers, distributors, categories, onUpdateQuantity }: FlowerGridProps) => {
   const [selectedDistributor, setSelectedDistributor] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
@@ -106,6 +107,7 @@ const FlowerGrid = ({ flowers, distributors, categories }: FlowerGridProps) => {
             flower={flower}
             distributor={distributors.find((d) => d.id === flower.distributorId)!}
             category={categories.find((c) => c.id === flower.categoryId)!}
+            onUpdateQuantity={onUpdateQuantity}
           />
         ))}
       </div>
