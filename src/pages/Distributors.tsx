@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Distributor } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -7,18 +8,28 @@ import { Card } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Distributors = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const [distributors, setDistributors] = useState<Distributor[]>([
-    { id: "1", name: "Dutch Flower Group" },
-    { id: "2", name: "FlowerPlus" },
-    { id: "3", name: "Garden Fresh" },
-  ]);
+  const queryClient = useQueryClient();
   const [newDistributorName, setNewDistributorName] = useState("");
 
-  const handleAddDistributor = (e: React.FormEvent) => {
+  const { data: distributors = [] } = useQuery<Distributor[]>({
+    queryKey: ['distributors'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('distributors')
+        .select('*')
+        .order('name');
+      if (error) throw error;
+      return data.map(d => ({ ...d, id: d.id.toString() }));
+    }
+  });
+
+  const handleAddDistributor = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newDistributorName.trim()) {
       toast({
@@ -29,25 +40,51 @@ const Distributors = () => {
       return;
     }
 
-    const newDistributor: Distributor = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: newDistributorName.trim(),
-    };
+    try {
+      const { error } = await supabase
+        .from('distributors')
+        .insert({ name: newDistributorName.trim() });
 
-    setDistributors((prev) => [...prev, newDistributor]);
-    setNewDistributorName("");
-    toast({
-      title: "Succes",
-      description: "Distribuitor adăugat cu succes",
-    });
+      if (error) throw error;
+
+      setNewDistributorName("");
+      queryClient.invalidateQueries({ queryKey: ['distributors'] });
+      toast({
+        title: "Succes",
+        description: "Distribuitor adăugat cu succes",
+      });
+    } catch (error) {
+      console.error('Error adding distributor:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la adăugarea distribuitorului",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleRemoveDistributor = (id: string) => {
-    setDistributors((prev) => prev.filter((d) => d.id !== id));
-    toast({
-      title: "Succes",
-      description: "Distribuitor șters cu succes",
-    });
+  const handleRemoveDistributor = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('distributors')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ['distributors'] });
+      toast({
+        title: "Succes",
+        description: "Distribuitor șters cu succes",
+      });
+    } catch (error) {
+      console.error('Error removing distributor:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la ștergerea distribuitorului",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

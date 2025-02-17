@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Category } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -7,19 +8,28 @@ import { Card } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Categories = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const [categories, setCategories] = useState<Category[]>([
-    { id: "1", name: "Roses" },
-    { id: "2", name: "Tulips" },
-    { id: "3", name: "Lilies" },
-    { id: "4", name: "Orchids" },
-  ]);
+  const queryClient = useQueryClient();
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  const handleAddCategory = (e: React.FormEvent) => {
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+      if (error) throw error;
+      return data.map(c => ({ ...c, id: c.id.toString() }));
+    }
+  });
+
+  const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCategoryName.trim()) {
       toast({
@@ -30,25 +40,51 @@ const Categories = () => {
       return;
     }
 
-    const newCategory: Category = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: newCategoryName.trim(),
-    };
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .insert({ name: newCategoryName.trim() });
 
-    setCategories((prev) => [...prev, newCategory]);
-    setNewCategoryName("");
-    toast({
-      title: "Succes",
-      description: "Categorie adăugată cu succes",
-    });
+      if (error) throw error;
+
+      setNewCategoryName("");
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      toast({
+        title: "Succes",
+        description: "Categorie adăugată cu succes",
+      });
+    } catch (error) {
+      console.error('Error adding category:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la adăugarea categoriei",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleRemoveCategory = (id: string) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id));
-    toast({
-      title: "Succes",
-      description: "Categorie ștearsă cu succes",
-    });
+  const handleRemoveCategory = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      toast({
+        title: "Succes",
+        description: "Categorie ștearsă cu succes",
+      });
+    } catch (error) {
+      console.error('Error removing category:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la ștergerea categoriei",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

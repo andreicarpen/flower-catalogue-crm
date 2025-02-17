@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Flower, Distributor, Category } from "@/types";
 import FlowerGrid from "@/components/FlowerGrid";
@@ -5,9 +6,10 @@ import AddFlowerForm from "@/components/AddFlowerForm";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu, Plus, Filter, LogOut } from "lucide-react";
+import { Menu, Plus, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,57 +27,108 @@ const Index = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [distributors] = useState<Distributor[]>([
-    { id: "1", name: "Dutch Flower Group" },
-    { id: "2", name: "FlowerPlus" },
-    { id: "3", name: "Garden Fresh" },
-  ]);
+  // Fetch data using React Query
+  const { data: distributors = [] } = useQuery<Distributor[]>({
+    queryKey: ['distributors'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('distributors')
+        .select('*');
+      if (error) throw error;
+      return data.map(d => ({ ...d, id: d.id.toString() }));
+    }
+  });
 
-  const [categories] = useState<Category[]>([
-    { id: "1", name: "Roses" },
-    { id: "2", name: "Tulips" },
-    { id: "3", name: "Lilies" },
-    { id: "4", name: "Orchids" },
-  ]);
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*');
+      if (error) throw error;
+      return data.map(c => ({ ...c, id: c.id.toString() }));
+    }
+  });
 
-  const [flowers, setFlowers] = useState<Flower[]>([
-    {
-      id: "1",
-      name: "Red Rose",
-      image: "https://images.unsplash.com/photo-1559563362-c667ba5f5480?w=800",
-      distributorId: "1",
-      categoryId: "1",
-      quantity: 100,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      name: "White Tulip",
-      image: "https://images.unsplash.com/photo-1600333859399-228aa03f7dba?w=800",
-      distributorId: "2",
-      categoryId: "2",
-      quantity: 50,
-      createdAt: new Date().toISOString(),
-    },
-  ]);
+  const { data: flowers = [], isLoading } = useQuery<Flower[]>({
+    queryKey: ['flowers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('flowers')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data.map(f => ({ ...f, id: f.id.toString(), distributorId: f.distributor_id.toString(), categoryId: f.category_id.toString() }));
+    }
+  });
 
-  const handleAddFlower = (newFlower: Omit<Flower, "id" | "createdAt">) => {
-    const flower: Flower = {
-      ...newFlower,
-      id: Math.random().toString(36).substr(2, 9),
-      createdAt: new Date().toISOString(),
-    };
-    setFlowers((prev) => [flower, ...prev]);
+  const handleAddFlower = async (newFlower: Omit<Flower, "id" | "createdAt">) => {
+    try {
+      // Upload image to Storage
+      const { data: imageData, error: uploadError } = await supabase.storage
+        .from('flower-images')
+        .upload(`${crypto.randomUUID()}.jpg`, await fetch(newFlower.image).then(r => r.blob()));
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL for the uploaded image
+      const { data: { publicUrl } } = supabase.storage
+        .from('flower-images')
+        .getPublicUrl(imageData.path);
+
+      // Insert flower data into the database
+      const { error: insertError } = await supabase
+        .from('flowers')
+        .insert({
+          name: newFlower.name,
+          image: publicUrl,
+          distributor_id: newFlower.distributorId,
+          category_id: newFlower.categoryId,
+          quantity: newFlower.quantity
+        });
+
+      if (insertError) throw insertError;
+
+      queryClient.invalidateQueries({ queryKey: ['flowers'] });
+      toast({
+        title: "Succes",
+        description: "Floare adăugată cu succes",
+      });
+    } catch (error) {
+      console.error('Error adding flower:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la adăugarea florii",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleUpdateQuantity = (id: string, quantity: number) => {
-    setFlowers((prev) =>
-      prev.map((flower) =>
-        flower.id === id ? { ...flower, quantity } : flower
-      )
-    );
+  const handleUpdateQuantity = async (id: string, quantity: number) => {
+    try {
+      const { error } = await supabase
+        .from('flowers')
+        .update({ quantity })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ['flowers'] });
+      toast({
+        title: "Succes",
+        description: "Cantitate actualizată cu succes",
+      });
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la actualizarea cantității",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleLogout = async () => {
