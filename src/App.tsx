@@ -8,6 +8,7 @@ import { AuthProvider } from "./components/AuthProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import AddFlower from "./pages/AddFlower";
 import Distributors from "./pages/Distributors";
 import Categories from "./pages/Categories";
 import NotFound from "./pages/NotFound";
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/add" element={<ProtectedRoute><AddFlower /></ProtectedRoute>} />
             <Route path="/distributors" element={<ProtectedRoute><Distributors /></ProtectedRoute>} />
             <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

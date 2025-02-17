@@ -1,37 +1,25 @@
 
-import { useState } from "react";
 import { Flower, Distributor, Category } from "@/types";
 import FlowerGrid from "@/components/FlowerGrid";
-import AddFlowerForm from "@/components/AddFlowerForm";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu, Plus, LogOut } from "lucide-react";
+import { Menu, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  MobileDialog,
-  MobileDialogContent,
-  MobileDialogHeader,
-  MobileDialogTitle,
-} from "@/components/ui/mobile-dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const Index = () => {
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Fetch data using React Query
-  const { data: distributors = [] } = useQuery<Distributor[]>({
+  const { data: distributors = [] } = useQuery({
     queryKey: ['distributors'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -42,7 +30,7 @@ const Index = () => {
     }
   });
 
-  const { data: categories = [] } = useQuery<Category[]>({
+  const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -53,7 +41,7 @@ const Index = () => {
     }
   });
 
-  const { data: flowers = [], isLoading } = useQuery<Flower[]>({
+  const { data: flowers = [] } = useQuery({
     queryKey: ['flowers'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -61,51 +49,17 @@ const Index = () => {
         .select('*')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data.map(f => ({ ...f, id: f.id.toString(), distributorId: f.distributor_id.toString(), categoryId: f.category_id.toString() }));
+      return data.map(f => ({
+        id: f.id.toString(),
+        name: f.name,
+        image: f.image,
+        distributorId: f.distributor_id.toString(),
+        categoryId: f.category_id.toString(),
+        quantity: f.quantity,
+        createdAt: f.created_at || new Date().toISOString()
+      }));
     }
   });
-
-  const handleAddFlower = async (newFlower: Omit<Flower, "id" | "createdAt">) => {
-    try {
-      // Upload image to Storage
-      const { data: imageData, error: uploadError } = await supabase.storage
-        .from('flower-images')
-        .upload(`${crypto.randomUUID()}.jpg`, await fetch(newFlower.image).then(r => r.blob()));
-
-      if (uploadError) throw uploadError;
-
-      // Get public URL for the uploaded image
-      const { data: { publicUrl } } = supabase.storage
-        .from('flower-images')
-        .getPublicUrl(imageData.path);
-
-      // Insert flower data into the database
-      const { error: insertError } = await supabase
-        .from('flowers')
-        .insert({
-          name: newFlower.name,
-          image: publicUrl,
-          distributor_id: newFlower.distributorId,
-          category_id: newFlower.categoryId,
-          quantity: newFlower.quantity
-        });
-
-      if (insertError) throw insertError;
-
-      queryClient.invalidateQueries({ queryKey: ['flowers'] });
-      toast({
-        title: "Succes",
-        description: "Floare adăugată cu succes",
-      });
-    } catch (error) {
-      console.error('Error adding flower:', error);
-      toast({
-        title: "Eroare",
-        description: "A apărut o eroare la adăugarea florii",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleUpdateQuantity = async (id: string, quantity: number) => {
     try {
@@ -116,7 +70,6 @@ const Index = () => {
 
       if (error) throw error;
 
-      queryClient.invalidateQueries({ queryKey: ['flowers'] });
       toast({
         title: "Succes",
         description: "Cantitate actualizată cu succes",
@@ -149,54 +102,41 @@ const Index = () => {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <Sheet>
+              <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="hover:bg-gray-100">
                   <Menu className="h-5 w-5" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48">
-                <Link to="/distributors">
-                  <DropdownMenuItem className="cursor-pointer">
-                    Distribuitori
-                  </DropdownMenuItem>
-                </Link>
-                <Link to="/categories">
-                  <DropdownMenuItem className="cursor-pointer">
-                    Categorii
-                  </DropdownMenuItem>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle>Meniu</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-4">
+                  <Link to="/distributors" className="block">
+                    <Button variant="ghost" className="w-full justify-start">
+                      Distribuitori
+                    </Button>
+                  </Link>
+                  <Link to="/categories" className="block">
+                    <Button variant="ghost" className="w-full justify-start">
+                      Categorii
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={handleLogout}
+                  >
+                    Deconectare
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleLogout}
-                className="hover:bg-gray-100"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-              <MobileDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <Button onClick={() => setDialogOpen(true)} className="bg-sage-600 hover:bg-sage-700">
-                  <Plus className="h-4 w-4 mr-1" /> Adaugă
-                </Button>
-                <MobileDialogContent>
-                  <MobileDialogHeader>
-                    <MobileDialogTitle>Adaugă Floare Nouă</MobileDialogTitle>
-                  </MobileDialogHeader>
-                  <AddFlowerForm
-                    distributors={distributors}
-                    categories={categories}
-                    onAdd={(flower) => {
-                      handleAddFlower(flower);
-                      setDialogOpen(false);
-                    }}
-                  />
-                </MobileDialogContent>
-              </MobileDialog>
-            </div>
+            <Button onClick={() => navigate('/add')} className="bg-sage-600 hover:bg-sage-700">
+              <Plus className="h-4 w-4 mr-1" /> Adaugă
+            </Button>
           </div>
         </div>
       </header>
