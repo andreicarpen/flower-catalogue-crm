@@ -1,10 +1,8 @@
-
 import { useState } from "react";
 import { Flower, Distributor, Category } from "@/types";
 import FlowerGrid from "@/components/FlowerGrid";
 import AddFlowerForm from "@/components/AddFlowerForm";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Menu, Plus, Filter } from "lucide-react";
@@ -14,9 +12,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  MobileDialog,
+  MobileDialogContent,
+  MobileDialogHeader,
+  MobileDialogTitle,
+} from "@/components/ui/mobile-dialog";
 
 const Index = () => {
   const isMobile = useIsMobile();
+  const [dialogOpen, setDialogOpen] = useState(false);
   // Mock data - in a real app, this would come from an API
   const [distributors] = useState<Distributor[]>([
     { id: "1", name: "Dutch Flower Group" },
@@ -95,20 +100,24 @@ const Index = () => {
             </DropdownMenu>
 
             <div className="flex items-center gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="bg-sage-600 hover:bg-sage-700">
-                    <Plus className="h-4 w-4 mr-1" /> Adaugă
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[600px] w-[95vw] sm:w-auto mx-4">
+              <MobileDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <Button onClick={() => setDialogOpen(true)} className="bg-sage-600 hover:bg-sage-700">
+                  <Plus className="h-4 w-4 mr-1" /> Adaugă
+                </Button>
+                <MobileDialogContent>
+                  <MobileDialogHeader>
+                    <MobileDialogTitle>Adaugă Floare Nouă</MobileDialogTitle>
+                  </MobileDialogHeader>
                   <AddFlowerForm
                     distributors={distributors}
                     categories={categories}
-                    onAdd={handleAddFlower}
+                    onAdd={(flower) => {
+                      handleAddFlower(flower);
+                      setDialogOpen(false);
+                    }}
                   />
-                </DialogContent>
-              </Dialog>
+                </MobileDialogContent>
+              </MobileDialog>
             </div>
           </div>
         </div>

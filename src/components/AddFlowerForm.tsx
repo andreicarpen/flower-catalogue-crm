@@ -76,8 +76,8 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-xl mx-auto">
-      <div className="space-y-4">
+    <form onSubmit={handleSubmit} className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         <div>
           <Input
             placeholder="Nume floare"
@@ -173,9 +173,11 @@ const AddFlowerForm = ({ distributors, categories, onAdd }: AddFlowerFormProps) 
         </div>
       </div>
 
-      <Button type="submit" className="w-full bg-sage-600 hover:bg-sage-700">
-        Adaugă Floare
-      </Button>
+      <div className="p-6 border-t mt-auto space-x-2 flex justify-end">
+        <Button type="submit" className="bg-sage-600 hover:bg-sage-700">
+          Adaugă Floare
+        </Button>
+      </div>
     </form>
   );
 };

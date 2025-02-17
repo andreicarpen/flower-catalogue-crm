@@ -4,11 +4,12 @@ import { Flower } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  MobileDialog,
+  MobileDialogContent,
+  MobileDialogHeader,
+  MobileDialogTitle,
+  MobileDialogFooter,
+} from "@/components/ui/mobile-dialog";
 import { useToast } from "@/components/ui/use-toast";
 
 interface EditFlowerDialogProps {
@@ -44,13 +45,13 @@ const EditFlowerDialog = ({ flower, open, onOpenChange, onUpdate }: EditFlowerDi
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] sm:w-auto max-w-md mx-4">
-        <DialogHeader>
-          <DialogTitle>Actualizare Cantitate - {flower.name}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+    <MobileDialog open={open} onOpenChange={onOpenChange}>
+      <MobileDialogContent>
+        <MobileDialogHeader>
+          <MobileDialogTitle>Actualizare Cantitate - {flower.name}</MobileDialogTitle>
+        </MobileDialogHeader>
+        <form onSubmit={handleSubmit} className="flex-1 p-6">
+          <div className="space-y-4">
             <Input
               type="number"
               value={quantity}
@@ -59,10 +60,17 @@ const EditFlowerDialog = ({ flower, open, onOpenChange, onUpdate }: EditFlowerDi
               placeholder="Cantitate nouă"
             />
           </div>
-          <Button type="submit" className="w-full">Actualizează Cantitatea</Button>
         </form>
-      </DialogContent>
-    </Dialog>
+        <MobileDialogFooter>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            Anulează
+          </Button>
+          <Button onClick={handleSubmit}>
+            Actualizează Cantitatea
+          </Button>
+        </MobileDialogFooter>
+      </MobileDialogContent>
+    </MobileDialog>
   );
 };
 
