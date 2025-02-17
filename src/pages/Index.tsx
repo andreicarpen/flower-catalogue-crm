@@ -3,9 +3,11 @@ import { Flower, Distributor, Category } from "@/types";
 import FlowerGrid from "@/components/FlowerGrid";
 import AddFlowerForm from "@/components/AddFlowerForm";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu, Plus, Filter } from "lucide-react";
+import { Menu, Plus, Filter, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,8 +23,10 @@ import {
 
 const Index = () => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
-  // Mock data - in a real app, this would come from an API
+
   const [distributors] = useState<Distributor[]>([
     { id: "1", name: "Dutch Flower Group" },
     { id: "2", name: "FlowerPlus" },
@@ -74,6 +78,19 @@ const Index = () => {
     );
   };
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la deconectare",
+        variant: "destructive",
+      });
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -100,6 +117,14 @@ const Index = () => {
             </DropdownMenu>
 
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="hover:bg-gray-100"
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
               <MobileDialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <Button onClick={() => setDialogOpen(true)} className="bg-sage-600 hover:bg-sage-700">
                   <Plus className="h-4 w-4 mr-1" /> Adaugă
