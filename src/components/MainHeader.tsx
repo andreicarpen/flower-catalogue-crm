@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Menu, Store, Tag, LogOut, Filter, ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,13 +17,15 @@ interface MainHeaderProps {
   title?: string;
   showSearch?: boolean;
   onSearchChange?: (value: string) => void;
+  showFilter?: boolean;
 }
 
 export const MainHeader = ({ 
   showBackButton, 
   title, 
   showSearch = false,
-  onSearchChange 
+  onSearchChange,
+  showFilter = false
 }: MainHeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
