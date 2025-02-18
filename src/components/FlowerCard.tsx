@@ -37,7 +37,7 @@ const FlowerCard = ({
               {format(new Date(flower.createdAt), 'dd/MM/yyyy')}
             </span>
           </div>
-          <h3 className="font-serif text-base sm:text-lg font-semibold">{flower.name}</h3>
+          <h3 className="font-bold text-xl">{flower.name}</h3>
           <div className="flex justify-between items-center">
             <p className="text-sm text-gray-600">Cantitate: {flower.quantity}</p>
             <Button variant="ghost" size="icon" onClick={() => setEditDialogOpen(true)}>
