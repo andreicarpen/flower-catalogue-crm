@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Distributor } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -89,17 +88,7 @@ const Distributors = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className={`flex ${isMobile ? 'flex-col gap-4' : 'justify-between items-center'}`}>
-            <h1 className="font-serif text-xl sm:text-2xl font-semibold text-gray-900">Distribuitori</h1>
-            <Link to="/">
-              <Button variant="outline" className="w-full sm:w-auto">Înapoi la Inventar</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      <MainHeader showBackButton title="Distribuitori" />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         <div className="space-y-4 sm:space-y-6">
           <Card className="p-4 sm:p-6">

@@ -76,7 +76,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MainHeader />
+      <MainHeader showSearch showFilter />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         <FlowerGrid
           flowers={flowers}

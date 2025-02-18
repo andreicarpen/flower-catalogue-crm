@@ -1,18 +1,27 @@
 
 import { Button } from "@/components/ui/button";
-import { Menu, Store, Tag, LogOut, Filter, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Menu, Store, Tag, LogOut, Filter, ArrowLeft } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
-export const MainHeader = () => {
+interface MainHeaderProps {
+  showBackButton?: boolean;
+  title?: string;
+  showSearch?: boolean;
+  showFilter?: boolean;
+}
+
+export const MainHeader = ({ showBackButton, title, showSearch = false, showFilter = false }: MainHeaderProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   const handleLogout = async () => {
@@ -27,6 +36,22 @@ export const MainHeader = () => {
       navigate("/login");
     }
   };
+
+  if (showBackButton) {
+    return (
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" onClick={() => navigate('/')} className="hover:bg-gray-100">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-lg font-semibold">{title}</h1>
+            <div className="w-10" /> {/* Spacer for alignment */}
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="bg-white shadow-sm">
@@ -66,14 +91,21 @@ export const MainHeader = () => {
             </SheetContent>
           </Sheet>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
-              <Search className="h-5 w-5" />
-            </Button>
+          {showSearch && (
+            <div className="flex-1 mx-4">
+              <Input
+                type="search"
+                placeholder="Caută..."
+                className="max-w-sm"
+              />
+            </div>
+          )}
+
+          {showFilter && (
             <Button variant="ghost" size="icon">
               <Filter className="h-5 w-5" />
             </Button>
-          </div>
+          )}
         </div>
       </div>
     </header>
