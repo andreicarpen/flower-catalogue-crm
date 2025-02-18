@@ -18,7 +18,7 @@ const CategoryFilter = ({
             <Button variant={selectedCategory === null ? "default" : "outline"} onClick={() => onSelectCategory(null)} className="shrink-0 text-xs p-2 py-[8px] px-[10px]">
               Toate
             </Button>
-            {categories.sort((a, b) => a.name.localeCompare(b.name)).map(category => <Button key={category.id} variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => onSelectCategory(category.id)} className="shrink-0 text-xs p-2 px-[10px] py-[8px]">
+            {categories.sort((a, b) => a.name.localeCompare(b.name)).map(category => <Button key={category.id} variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => onSelectCategory(category.id)} className="shrink-0 text-xs p-2 px-[10px] !py-2">
                 {category.name}
               </Button>)}
           </div>
