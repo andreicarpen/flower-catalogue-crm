@@ -68,7 +68,7 @@ const EditFlowerDialog = ({
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-[32px]">
             <Input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} min="0" placeholder="Cantitate nouă" className="my-[10px]" />
-            <Button type="button" variant="destructive" className="w-full" onClick={() => setShowDeleteAlert(true)}>
+            <Button type="button" variant="destructive" onClick={() => setShowDeleteAlert(true)} className="w-full bg-transparent text-black border-zinc-800">
               Șterge floarea
             </Button>
           </form>
