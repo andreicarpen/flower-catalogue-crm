@@ -53,7 +53,7 @@ export const MainHeader = ({
       </header>;
   }
   return <header className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-2 py-[12px] px-[4px]">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-2 py-12px px-4px">
         <div className="flex justify-between items-center">
           <Sheet>
             <SheetTrigger asChild>
