@@ -25,25 +25,13 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        sage: {
-          50: "#f4f7f4",
-          100: "#e6ede6",
-          200: "#d1ddd1",
-          300: "#b3c5b3",
-          400: "#8fa68f",
-          500: "#718b71",
-          600: "#597159",
-          700: "#455b45",
-          800: "#3a4b3a",
-          900: "#314031",
-        },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#661133",
+          foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#f4e0e7",
+          foreground: "#661133",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -54,8 +42,8 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#f9e5eb",
+          foreground: "#661133",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -64,6 +52,18 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        sage: {
+          50: "#f4e0e7",
+          100: "#e8c1cf",
+          200: "#d49bb3",
+          300: "#bf7597",
+          400: "#aa4f7b",
+          500: "#661133",
+          600: "#5c0f2e",
+          700: "#520d29",
+          800: "#470b24",
+          900: "#3d091f",
         },
       },
       borderRadius: {
@@ -80,20 +80,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideUp: {
-          "0%": { transform: "translateY(10px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        fadeIn: "fadeIn 0.5s ease-out",
-        slideUp: "slideUp 0.5s ease-out",
       },
     },
   },

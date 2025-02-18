@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Menu, Store, Tag, LogOut, Filter, ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,10 +15,15 @@ interface MainHeaderProps {
   showBackButton?: boolean;
   title?: string;
   showSearch?: boolean;
-  showFilter?: boolean;
+  onSearchChange?: (value: string) => void;
 }
 
-export const MainHeader = ({ showBackButton, title, showSearch = false, showFilter = false }: MainHeaderProps) => {
+export const MainHeader = ({ 
+  showBackButton, 
+  title, 
+  showSearch = false,
+  onSearchChange 
+}: MainHeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -97,6 +101,7 @@ export const MainHeader = ({ showBackButton, title, showSearch = false, showFilt
                 type="search"
                 placeholder="Caută..."
                 className="max-w-sm"
+                onChange={(e) => onSearchChange?.(e.target.value)}
               />
             </div>
           )}
