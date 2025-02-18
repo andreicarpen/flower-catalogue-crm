@@ -72,28 +72,7 @@ const AddFlowerForm = ({
           <Input placeholder="Nume floare" value={name} onChange={e => setName(e.target.value)} className="w-full" />
         </div>
 
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button type="button" variant="outline" className="flex-1" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="w-4 h-4 mr-2" />
-              Alege Imagine
-            </Button>
-            <Button type="button" variant="outline" className="flex-1" onClick={() => {
-            if (fileInputRef.current) {
-              fileInputRef.current.capture = "environment";
-              fileInputRef.current.click();
-            }
-          }}>
-              <Camera className="w-4 h-4 mr-2" />
-              Fă o Poză
-            </Button>
-          </div>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-          {imagePreview && <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
-              <img src={imagePreview} alt="Previzualizare" className="h-full w-full object-cover" />
-            </div>}
-        </div>
-
+        
         <div>
           <Select onValueChange={setDistributorId} value={distributorId}>
             <SelectTrigger>
@@ -123,6 +102,29 @@ const AddFlowerForm = ({
         <div>
           <Input type="number" placeholder="Cantitate" value={quantity} onChange={e => setQuantity(e.target.value)} min="0" className="w-full" />
         </div>
+        <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button type="button" variant="outline" className="flex-1" onClick={() => fileInputRef.current?.click()}>
+            <Upload className="w-4 h-4 mr-2" />
+            Alege Imagine
+          </Button>
+          <Button type="button" variant="outline" className="flex-1" onClick={() => {
+          if (fileInputRef.current) {
+            fileInputRef.current.capture = "environment";
+            fileInputRef.current.click();
+          }
+        }}>
+            <Camera className="w-4 h-4 mr-2" />
+            Fă o Poză
+          </Button>
+        </div>
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+        {imagePreview && <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
+            <img src={imagePreview} alt="Previzualizare" className="h-full w-full object-cover" />
+          </div>}
+      </div>
+    
+
       </div>
 
       <div className="fixed bottom-0 left-0 w-full p-6 border-t space-x-2 flex justify-end bg-white">
