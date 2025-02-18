@@ -12,7 +12,7 @@ const CategoryFilter = ({
   onSelectCategory
 }: CategoryFilterProps) => {
   return <div className="bg-white border-b py-0">
-      <div className="max-w-7xl mx-auto py-0 pb-2 px-0 pl-1">
+      <div className="w-full  py-0 pb-2 px-0 pl-1">
         <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex space-x-1">
             <Button variant={selectedCategory === null ? "default" : "outline"} onClick={() => onSelectCategory(null)} className="shrink-0 text-xs p-2 py-[8px] px-[10px]">
