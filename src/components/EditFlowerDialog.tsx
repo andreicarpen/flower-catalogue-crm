@@ -62,7 +62,7 @@ const EditFlowerDialog = ({
       }
       onOpenChange(newOpen);
     }}>
-        <DialogContent className="sm:max-w-[425px] fixed top-300 mx-auto w-full max-w-lg">
+        <DialogContent className="sm:max-w-[425px] fixed top-10 mx-auto w-full max-w-lg bg-white p-6 shadow-lg rounded-lg">
           <DialogHeader>
             <DialogTitle>{flower.name}</DialogTitle>
           </DialogHeader>
