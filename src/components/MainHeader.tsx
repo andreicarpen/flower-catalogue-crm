@@ -1,17 +1,11 @@
-
 import { Button } from "@/components/ui/button";
 import { Menu, Store, Tag, LogOut, Filter, ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-
 interface MainHeaderProps {
   showBackButton?: boolean;
   title?: string;
@@ -19,34 +13,34 @@ interface MainHeaderProps {
   onSearchChange?: (value: string) => void;
   showFilter?: boolean;
 }
-
-export const MainHeader = ({ 
-  showBackButton, 
-  title, 
+export const MainHeader = ({
+  showBackButton,
+  title,
   showSearch = false,
   onSearchChange,
   showFilter = false
 }: MainHeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
+    const {
+      error
+    } = await supabase.auth.signOut();
     if (error) {
       toast({
         title: "Eroare",
         description: "A apărut o eroare la deconectare",
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       navigate("/login");
     }
   };
-
   if (showBackButton) {
-    return (
-      <header className="bg-white shadow-sm">
+    return <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={() => navigate('/')} className="hover:bg-gray-100">
@@ -56,13 +50,10 @@ export const MainHeader = ({
             <div className="w-10" /> {/* Spacer for alignment */}
           </div>
         </div>
-      </header>
-    );
+      </header>;
   }
-
-  return (
-    <header className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+  return <header className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-0 pb-8">
         <div className="flex justify-between items-center">
           <Sheet>
             <SheetTrigger asChild>
@@ -86,11 +77,7 @@ export const MainHeader = ({
                 </Link>
               </div>
               <div className="border-t">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 mt-4"
-                  onClick={handleLogout}
-                >
+                <Button variant="ghost" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 mt-4" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Deconectare
                 </Button>
@@ -98,24 +85,14 @@ export const MainHeader = ({
             </SheetContent>
           </Sheet>
 
-          {showSearch && (
-            <div className="flex-1 mx-4">
-              <Input
-                type="search"
-                placeholder="Caută..."
-                className="max-w-sm"
-                onChange={(e) => onSearchChange?.(e.target.value)}
-              />
-            </div>
-          )}
+          {showSearch && <div className="flex-1 mx-4">
+              <Input type="search" placeholder="Caută..." className="max-w-sm" onChange={e => onSearchChange?.(e.target.value)} />
+            </div>}
 
-          {showFilter && (
-            <Button variant="ghost" size="icon">
+          {showFilter && <Button variant="ghost" size="icon">
               <Filter className="h-5 w-5" />
-            </Button>
-          )}
+            </Button>}
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
