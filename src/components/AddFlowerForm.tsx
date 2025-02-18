@@ -125,7 +125,7 @@ const AddFlowerForm = ({
         </div>
       </div>
 
-      <div className="p-6 border-t mt-auto space-x-2 flex justify-end sticky bottom-0 bg-white">
+      <div className="fixed bottom-0 left-0 w-full p-6 border-t space-x-2 flex justify-end bg-white">
         <Button type="submit" className="bg-sage-600 hover:bg-sage-700">
           Adaugă Floare
         </Button>
