@@ -4,9 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { MainHeader } from "@/components/MainHeader";
 import FlowerGrid from "@/components/FlowerGrid";
 import { useFlowerData } from "@/hooks/use-flower-data";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { flowers, distributors, categories } = useFlowerData();
 
   const handleUpdateQuantity = async (id: string, quantity: number) => {
@@ -32,6 +36,44 @@ const Index = () => {
     }
   };
 
+  const handleDeleteFlower = async (id: string) => {
+    try {
+      const { data: flower } = await supabase
+        .from('flowers')
+        .select('image')
+        .eq('id', id)
+        .single();
+
+      if (flower?.image) {
+        const imagePath = flower.image.split('/').pop();
+        if (imagePath) {
+          await supabase.storage
+            .from('flower-images')
+            .remove([imagePath]);
+        }
+      }
+
+      const { error } = await supabase
+        .from('flowers')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Succes",
+        description: "Floare ștearsă cu succes",
+      });
+    } catch (error) {
+      console.error('Error deleting flower:', error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la ștergerea florii",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <MainHeader />
@@ -41,8 +83,15 @@ const Index = () => {
           distributors={distributors}
           categories={categories}
           onUpdateQuantity={handleUpdateQuantity}
+          onDeleteFlower={handleDeleteFlower}
         />
       </main>
+      <Button
+        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg bg-sage-600 hover:bg-sage-700"
+        onClick={() => navigate('/add')}
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
     </div>
   );
 };

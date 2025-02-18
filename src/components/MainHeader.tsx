@@ -1,13 +1,11 @@
 
 import { Button } from "@/components/ui/button";
-import { Menu, Plus } from "lucide-react";
+import { Menu, Store, Tag, LogOut, Filter, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,35 +38,42 @@ export const MainHeader = () => {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
-              <SheetHeader>
-                <SheetTitle>Meniu</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6 space-y-4">
+            <SheetContent side="left" className="flex flex-col">
+              <div className="flex-1 mt-6 space-y-4">
                 <Link to="/distributors" className="block">
                   <Button variant="ghost" className="w-full justify-start">
+                    <Store className="mr-2 h-4 w-4" />
                     Distribuitori
                   </Button>
                 </Link>
                 <Link to="/categories" className="block">
                   <Button variant="ghost" className="w-full justify-start">
+                    <Tag className="mr-2 h-4 w-4" />
                     Categorii
                   </Button>
                 </Link>
+              </div>
+              <div className="border-t">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 mt-4"
                   onClick={handleLogout}
                 >
+                  <LogOut className="mr-2 h-4 w-4" />
                   Deconectare
                 </Button>
               </div>
             </SheetContent>
           </Sheet>
 
-          <Button onClick={() => navigate('/add')} className="bg-sage-600 hover:bg-sage-700">
-            <Plus className="h-4 w-4 mr-1" /> Adaugă
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon">
+              <Search className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <Filter className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </div>
     </header>

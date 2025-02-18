@@ -5,15 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Flower, Distributor, Category } from "@/types";
 import EditFlowerDialog from "./EditFlowerDialog";
 import { Pencil } from "lucide-react";
+import { format } from "date-fns";
 
 interface FlowerCardProps {
   flower: Flower;
   distributor: Distributor;
   category: Category;
   onUpdateQuantity: (id: string, quantity: number) => void;
+  onDeleteFlower?: (id: string) => void;
 }
 
-const FlowerCard = ({ flower, distributor, category, onUpdateQuantity }: FlowerCardProps) => {
+const FlowerCard = ({ flower, distributor, category, onUpdateQuantity, onDeleteFlower }: FlowerCardProps) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   return (
@@ -29,10 +31,13 @@ const FlowerCard = ({ flower, distributor, category, onUpdateQuantity }: FlowerC
         <div className="p-3 sm:p-4">
           <div className="flex flex-wrap gap-1 sm:gap-2 mb-2">
             <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-sage-100 text-sage-900">
-              {distributor.name}
+              {distributor?.name}
             </span>
             <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-sage-100 text-sage-900">
-              {category.name}
+              {category?.name}
+            </span>
+            <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-sage-100 text-sage-900">
+              {format(new Date(flower.createdAt), 'dd/MM/yyyy')}
             </span>
           </div>
           <h3 className="font-serif text-base sm:text-lg font-semibold">{flower.name}</h3>
@@ -53,6 +58,7 @@ const FlowerCard = ({ flower, distributor, category, onUpdateQuantity }: FlowerC
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         onUpdate={onUpdateQuantity}
+        onDelete={onDeleteFlower}
       />
     </>
   );
