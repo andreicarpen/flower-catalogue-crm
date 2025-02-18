@@ -130,7 +130,7 @@ const Index = () => {
 
         <FlowerGrid flowers={filteredAndSortedFlowers} distributors={distributors} categories={categories} onUpdateQuantity={handleUpdateQuantity} onDeleteFlower={handleDeleteFlower} />
       </main>
-      <Button onClick={() => navigate('/add')} className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg bg-primary hover:bg-primary/90 text-base py-[52px] px-[52px]">
+      <Button onClick={() => navigate('/add')} className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg bg-primary hover:bg-primary/90 text-base py-[44px] px-[44px]">
         <Plus className="h-6 w-6" />
       </Button>
     </div>;
