@@ -33,9 +33,7 @@ const FlowerCard = ({
             <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-sage-100 text-sage-900">
               {category?.name}
             </span>
-            <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-sage-100 text-sage-900">
-              {format(new Date(flower.createdAt), 'dd/MM/yyyy')}
-            </span>
+            
           </div>
           <h3 className="font-bold text-xl">{flower.name}</h3>
           <div className="flex justify-between items-center">
