@@ -71,7 +71,9 @@ const AddFlowerForm = ({
         <div>
           <Input placeholder="Nume floare" value={name} onChange={e => setName(e.target.value)} className="w-full" />
         </div>
-
+        <div>
+          <Input type="number" placeholder="Cantitate" value={quantity} onChange={e => setQuantity(e.target.value)} min="0" className="w-full" />
+        </div>
         
         <div>
           <Select onValueChange={setDistributorId} value={distributorId}>
@@ -99,9 +101,7 @@ const AddFlowerForm = ({
           </Select>
         </div>
 
-        <div>
-          <Input type="number" placeholder="Cantitate" value={quantity} onChange={e => setQuantity(e.target.value)} min="0" className="w-full" />
-        </div>
+       
         <div className="space-y-4">
         <div className="flex flex-col sm:flex-row gap-2">
           <Button type="button" variant="outline" className="flex-1" onClick={() => fileInputRef.current?.click()}>
