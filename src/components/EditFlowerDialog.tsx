@@ -73,9 +73,7 @@ const EditFlowerDialog = ({
             </Button>
           </form>
           <DialogFooter className="sm:justify-end gap-2">
-            <Button type="button" variant="outline" onClick={handleCancel} className="hidden">
-              Anulează
-            </Button>
+            
             <Button onClick={handleSubmit}>
               Actualizează Cantitatea
             </Button>
