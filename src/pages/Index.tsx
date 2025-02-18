@@ -129,12 +129,12 @@ const Index = () => {
       />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         <div className="flex gap-4 mb-4">
-          <Select value={selectedDistributor || ""} onValueChange={(value) => setSelectedDistributor(value || null)}>
+          <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Distribuitor" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Toți distribuitorii</SelectItem>
+              <SelectItem value="all">Toți distribuitorii</SelectItem>
               {distributors
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map(distributor => (
