@@ -98,11 +98,11 @@ const Index = () => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
   });
-  return <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50 py-0">
       <MainHeader showSearch onSearchChange={setSearchQuery} />
       <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-[12px] lg:px-[32px]">
-        <div className="flex gap-4 mb-4">
+        <div className="flex gap-2 mb-4">
           <Select value={selectedDistributor || "all"} onValueChange={value => setSelectedDistributor(value === "all" ? null : value)}>
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Distribuitor" />
