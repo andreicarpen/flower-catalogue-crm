@@ -1,20 +1,22 @@
+
 import { useState } from "react";
 import { Distributor } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
-import { Trash2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MainHeader } from "@/components/MainHeader";
+import { useFlowerData } from "@/hooks/use-flower-data";
 
 const Distributors = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [newDistributorName, setNewDistributorName] = useState("");
+  const { flowers } = useFlowerData();
 
   const { data: distributors = [] } = useQuery<Distributor[]>({
     queryKey: ['distributors'],
@@ -62,30 +64,6 @@ const Distributors = () => {
     }
   };
 
-  const handleRemoveDistributor = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('distributors')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      queryClient.invalidateQueries({ queryKey: ['distributors'] });
-      toast({
-        title: "Succes",
-        description: "Distribuitor șters cu succes",
-      });
-    } catch (error) {
-      console.error('Error removing distributor:', error);
-      toast({
-        title: "Eroare",
-        description: "A apărut o eroare la ștergerea distribuitorului",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <MainHeader showBackButton title="Distribuitori" />
@@ -103,17 +81,25 @@ const Distributors = () => {
             </form>
           </Card>
 
-          <div className="grid gap-2 sm:gap-4">
+          <div className="grid gap-4">
             {distributors.map((distributor) => (
-              <Card key={distributor.id} className="p-4 flex justify-between items-center">
-                <span className="font-medium">{distributor.name}</span>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleRemoveDistributor(distributor.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <Card key={distributor.id} className="p-4">
+                <h3 className="font-medium text-lg mb-4">{distributor.name}</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {flowers
+                    .filter(flower => flower.distributorId === distributor.id)
+                    .map(flower => (
+                      <div key={flower.id} className="flex items-center gap-2 bg-white rounded-lg p-2 border">
+                        <img 
+                          src={flower.image} 
+                          alt={flower.name}
+                          className="w-12 h-12 object-cover rounded"
+                        />
+                        <span className="text-sm truncate">{flower.name}</span>
+                      </div>
+                    ))
+                  }
+                </div>
               </Card>
             ))}
           </div>

@@ -1,20 +1,22 @@
+
 import { useState } from "react";
 import { Category } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
-import { Trash2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MainHeader } from "@/components/MainHeader";
+import { useFlowerData } from "@/hooks/use-flower-data";
 
 const Categories = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [newCategoryName, setNewCategoryName] = useState("");
+  const { flowers } = useFlowerData();
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ['categories'],
@@ -62,30 +64,6 @@ const Categories = () => {
     }
   };
 
-  const handleRemoveCategory = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast({
-        title: "Succes",
-        description: "Categorie ștearsă cu succes",
-      });
-    } catch (error) {
-      console.error('Error removing category:', error);
-      toast({
-        title: "Eroare",
-        description: "A apărut o eroare la ștergerea categoriei",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <MainHeader showBackButton title="Categorii" />
@@ -103,17 +81,25 @@ const Categories = () => {
             </form>
           </Card>
 
-          <div className="grid gap-2 sm:gap-4">
+          <div className="grid gap-4">
             {categories.map((category) => (
-              <Card key={category.id} className="p-4 flex justify-between items-center">
-                <span className="font-medium">{category.name}</span>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleRemoveCategory(category.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <Card key={category.id} className="p-4">
+                <h3 className="font-medium text-lg mb-4">{category.name}</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {flowers
+                    .filter(flower => flower.categoryId === category.id)
+                    .map(flower => (
+                      <div key={flower.id} className="flex items-center gap-2 bg-white rounded-lg p-2 border">
+                        <img 
+                          src={flower.image} 
+                          alt={flower.name}
+                          className="w-12 h-12 object-cover rounded"
+                        />
+                        <span className="text-sm truncate">{flower.name}</span>
+                      </div>
+                    ))
+                  }
+                </div>
               </Card>
             ))}
           </div>

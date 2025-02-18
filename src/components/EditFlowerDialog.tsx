@@ -3,13 +3,7 @@ import { useState } from "react";
 import { Flower } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  MobileDialog, 
-  MobileDialogContent, 
-  MobileDialogHeader,
-  MobileDialogTitle,
-  MobileDialogFooter 
-} from "@/components/ui/mobile-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
@@ -21,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EditFlowerDialogProps {
   flower: Flower;
@@ -38,6 +33,7 @@ const EditFlowerDialog = ({
   onDelete
 }: EditFlowerDialogProps) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [quantity, setQuantity] = useState(flower.quantity.toString());
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [originalQuantity] = useState(flower.quantity.toString());
@@ -68,40 +64,38 @@ const EditFlowerDialog = ({
 
   return (
     <>
-      <MobileDialog open={open} onOpenChange={onOpenChange}>
-        <MobileDialogContent className="!px-0">
-          <MobileDialogHeader className="px-6">
-            <MobileDialogTitle>{flower.name}</MobileDialogTitle>
-          </MobileDialogHeader>
-          <form onSubmit={handleSubmit} className="flex-1 px-6">
-            <div className="space-y-4">
-              <Input 
-                type="number" 
-                value={quantity} 
-                onChange={e => setQuantity(e.target.value)} 
-                min="0" 
-                placeholder="Cantitate nouă" 
-              />
-              <Button
-                type="button"
-                variant="destructive"
-                className="w-full"
-                onClick={() => setShowDeleteAlert(true)}
-              >
-                Șterge floarea
-              </Button>
-            </div>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{flower.name}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input 
+              type="number" 
+              value={quantity} 
+              onChange={e => setQuantity(e.target.value)} 
+              min="0" 
+              placeholder="Cantitate nouă" 
+            />
+            <Button
+              type="button"
+              variant="destructive"
+              className="w-full"
+              onClick={() => setShowDeleteAlert(true)}
+            >
+              Șterge floarea
+            </Button>
           </form>
-          <MobileDialogFooter className="px-6 py-4 border-t fixed bottom-0 w-full bg-white keyboard-safe">
+          <DialogFooter className="sm:justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleCancel}>
               Anulează
             </Button>
             <Button onClick={handleSubmit}>
               Actualizează Cantitatea
             </Button>
-          </MobileDialogFooter>
-        </MobileDialogContent>
-      </MobileDialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
         <AlertDialogContent>
