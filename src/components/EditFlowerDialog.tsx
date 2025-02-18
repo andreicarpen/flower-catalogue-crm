@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Flower } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,13 @@ const EditFlowerDialog = ({
   const isMobile = useIsMobile();
   const [quantity, setQuantity] = useState(flower.quantity.toString());
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const [originalQuantity] = useState(flower.quantity.toString());
+
+  // Reset quantity when dialog opens/closes
+  useEffect(() => {
+    if (open) {
+      setQuantity(flower.quantity.toString());
+    }
+  }, [open, flower.quantity]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,13 +64,18 @@ const EditFlowerDialog = ({
   };
 
   const handleCancel = () => {
-    setQuantity(originalQuantity);
+    setQuantity(flower.quantity.toString());
     onOpenChange(false);
   };
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={(newOpen) => {
+        if (!newOpen) {
+          setQuantity(flower.quantity.toString());
+        }
+        onOpenChange(newOpen);
+      }}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{flower.name}</DialogTitle>
