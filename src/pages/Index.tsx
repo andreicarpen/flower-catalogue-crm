@@ -125,7 +125,10 @@ const Index = () => {
           <Button
             variant={selectedDistributor === null ? "default" : "outline"}
             size="sm"
-            onClick={() => setSelectedDistributor(null)}
+            onClick={() => {
+              setSelectedDistributor(null);
+              setIsFilterOpen(false);
+            }}
             className="rounded-full"
           >
             Toți distribuitorii
@@ -137,7 +140,10 @@ const Index = () => {
                 key={distributor.id}
                 variant={selectedDistributor === distributor.id ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSelectedDistributor(distributor.id)}
+                onClick={() => {
+                  setSelectedDistributor(distributor.id);
+                  setIsFilterOpen(false);
+                }}
                 className="rounded-full"
               >
                 {distributor.name}
@@ -154,7 +160,10 @@ const Index = () => {
               key={option.value}
               variant={sortBy === option.value ? "default" : "outline"}
               size="sm"
-              onClick={() => setSortBy(option.value)}
+              onClick={() => {
+                setSortBy(option.value);
+                setIsFilterOpen(false);
+              }}
               className="rounded-full"
             >
               {option.label}
@@ -176,42 +185,9 @@ const Index = () => {
       />
       
       <main className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-wrap gap-4 items-center mb-6">
-          {!isMobile && (
-            <div className="flex gap-4 flex-1">
-              <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Distribuitor" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toți distribuitorii</SelectItem>
-                  {distributors
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map(distributor => (
-                      <SelectItem key={distributor.id} value={distributor.id}>
-                        {distributor.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Sortează după" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sortOptions.map(option => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          <div className="flex items-center gap-4">
-            {isMobile && (
+        <div className="flex items-center justify-between mb-6">
+          {isMobile ? (
+            <>
               <Button
                 variant="outline"
                 size="sm"
@@ -221,24 +197,73 @@ const Index = () => {
                 <Filter className="h-4 w-4" />
                 <span>Filtre</span>
               </Button>
-            )}
-            <div className="flex gap-2">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="icon"
-                onClick={() => setViewMode("grid")}
-              >
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="icon"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setViewMode("grid")}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex gap-4">
+                <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Distribuitor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toți distribuitorii</SelectItem>
+                    {distributors
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map(distributor => (
+                        <SelectItem key={distributor.id} value={distributor.id}>
+                          {distributor.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Sortează după" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sortOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setViewMode("grid")}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          )}
         </div>
 
         {isMobile && (
