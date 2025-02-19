@@ -5,21 +5,25 @@ import { MainHeader } from "@/components/MainHeader";
 import FlowerGrid from "@/components/FlowerGrid";
 import { useFlowerData } from "@/hooks/use-flower-data";
 import { Button } from "@/components/ui/button";
-import { Plus, Grid, List, Search } from "lucide-react";
+import { Plus, Grid, List, Search, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CategoryFilter from "@/components/CategoryFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { flowers, distributors, categories } = useFlowerData();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDistributor, setSelectedDistributor] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>("date");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleUpdateQuantity = async (id: string, quantity: number) => {
     try {
@@ -107,22 +111,47 @@ const Index = () => {
       }
     });
 
+  const FilterContent = () => (
+    <div className="space-y-4 py-4">
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Distribuitor</label>
+        <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Distribuitor" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toți distribuitorii</SelectItem>
+            {distributors
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(distributor => (
+                <SelectItem key={distributor.id} value={distributor.id}>
+                  {distributor.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Sortare</label>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Sortează după" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Data adăugării</SelectItem>
+            <SelectItem value="name">Nume</SelectItem>
+            <SelectItem value="distributor">Distribuitor</SelectItem>
+            <SelectItem value="category">Categorie</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-            <Input
-              type="search"
-              placeholder="Caută..."
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
+      <MainHeader showSearch onSearchChange={setSearchQuery} showFilter />
       
       <CategoryFilter
         categories={categories}
@@ -132,37 +161,39 @@ const Index = () => {
       
       <main className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-wrap gap-4 items-center mb-6">
-          <div className="flex gap-4 flex-1">
-            <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Distribuitor" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toți distribuitorii</SelectItem>
-                {distributors
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map(distributor => (
-                    <SelectItem key={distributor.id} value={distributor.id}>
-                      {distributor.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+          {!isMobile && (
+            <div className="flex gap-4 flex-1">
+              <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Distribuitor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toți distribuitorii</SelectItem>
+                  {distributors
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(distributor => (
+                      <SelectItem key={distributor.id} value={distributor.id}>
+                        {distributor.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
 
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Sortează după" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="date">Data adăugării</SelectItem>
-                <SelectItem value="name">Nume</SelectItem>
-                <SelectItem value="distributor">Distribuitor</SelectItem>
-                <SelectItem value="category">Categorie</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Sortează după" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Data adăugării</SelectItem>
+                  <SelectItem value="name">Nume</SelectItem>
+                  <SelectItem value="distributor">Distribuitor</SelectItem>
+                  <SelectItem value="category">Categorie</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 ml-auto">
             <Button
               variant={viewMode === "grid" ? "default" : "outline"}
               size="icon"
@@ -179,6 +210,17 @@ const Index = () => {
             </Button>
           </div>
         </div>
+
+        {isMobile && (
+          <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+            <SheetContent side="bottom" className="h-[40vh]">
+              <SheetHeader>
+                <SheetTitle>Filtre</SheetTitle>
+              </SheetHeader>
+              <FilterContent />
+            </SheetContent>
+          </Sheet>
+        )}
 
         <div className={viewMode === "grid" ? "" : "space-y-4"}>
           {viewMode === "grid" ? (
