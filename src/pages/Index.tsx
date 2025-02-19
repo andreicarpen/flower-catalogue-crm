@@ -123,7 +123,7 @@ const Index = () => {
           <Button variant={selectedDistributor === null ? "default" : "outline"} size="sm" onClick={() => {
           setSelectedDistributor(null);
           setIsFilterOpen(false);
-        }} className="">
+        }} className="rounded-full">
             Toți distribuitorii
           </Button>
           {distributors.sort((a, b) => a.name.localeCompare(b.name)).map(distributor => <Button key={distributor.id} variant={selectedDistributor === distributor.id ? "default" : "outline"} size="sm" onClick={() => {
