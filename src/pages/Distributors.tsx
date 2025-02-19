@@ -77,9 +77,7 @@ const Distributors = () => {
           <Card className="p-6">
             <form onSubmit={handleAddDistributor} className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1 space-y-2">
-                <label htmlFor="distributorName" className="text-sm font-medium">
-                  Nume distribuitor
-                </label>
+                <label htmlFor="distributorName" className="text-sm font-medium">Distribuitor nou</label>
                 <Input id="distributorName" placeholder="Nume distribuitor nou" value={newDistributorName} onChange={e => setNewDistributorName(e.target.value)} />
               </div>
               <Button type="submit" className="self-end">
