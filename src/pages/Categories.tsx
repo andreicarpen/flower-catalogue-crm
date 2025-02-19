@@ -91,7 +91,7 @@ const Categories = () => {
           <div className="grid gap-6">
             {sortedCategories.map(category => {
             const categoryFlowers = flowers.filter(flower => flower.categoryId === category.id).sort((a, b) => a.name.localeCompare(b.name));
-            return <Card key={category.id} className="">
+            return <Card key={category.id} className="bg-black/0 border-0">
                   <h3 className="font-medium text-lg mb-4">{category.name}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {categoryFlowers.map(flower => <div key={flower.id} className="flex items-center gap-3 bg-white rounded-lg p-3 border">
