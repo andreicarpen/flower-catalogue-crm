@@ -77,9 +77,7 @@ const Categories = () => {
           <Card className="p-6">
             <form onSubmit={handleAddCategory} className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1 space-y-2">
-                <label htmlFor="categoryName" className="text-sm font-medium">
-                  Nume categorie
-                </label>
+                <label htmlFor="categoryName" className="text-sm font-medium">Categorie nouă</label>
                 <Input id="categoryName" placeholder="Nume categorie nouă" value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} />
               </div>
               <Button type="submit" className="self-end">
