@@ -9,66 +9,68 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MainHeader } from "@/components/MainHeader";
 import { useFlowerData } from "@/hooks/use-flower-data";
-
 const Categories = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [newCategoryName, setNewCategoryName] = useState("");
-  const { flowers } = useFlowerData();
-
-  const { data: categories = [] } = useQuery<Category[]>({
+  const {
+    flowers
+  } = useFlowerData();
+  const {
+    data: categories = []
+  } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
+      const {
+        data,
+        error
+      } = await supabase.from('categories').select('*').order('name');
       if (error) throw error;
-      return data.map(c => ({ ...c, id: c.id.toString() }));
+      return data.map(c => ({
+        ...c,
+        id: c.id.toString()
+      }));
     }
   });
-
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCategoryName.trim()) {
       toast({
         title: "Eroare",
         description: "Vă rugăm introduceți numele categoriei",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     try {
-      const { error } = await supabase
-        .from('categories')
-        .insert({ name: newCategoryName.trim() });
-
+      const {
+        error
+      } = await supabase.from('categories').insert({
+        name: newCategoryName.trim()
+      });
       if (error) throw error;
-
       setNewCategoryName("");
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({
+        queryKey: ['categories']
+      });
       toast({
         title: "Succes",
-        description: "Categorie adăugată cu succes",
+        description: "Categorie adăugată cu succes"
       });
     } catch (error) {
       console.error('Error adding category:', error);
       toast({
         title: "Eroare",
         description: "A apărut o eroare la adăugarea categoriei",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
-  const sortedCategories = [...categories].sort((a, b) => 
-    a.name.localeCompare(b.name)
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name));
+  return <div className="min-h-screen bg-gray-50">
       <MainHeader showBackButton title="Categorii" />
       <main className="max-w-7xl mx-auto px-4 py-6">
         <div className="space-y-6">
@@ -78,12 +80,7 @@ const Categories = () => {
                 <label htmlFor="categoryName" className="text-sm font-medium">
                   Nume categorie
                 </label>
-                <Input
-                  id="categoryName"
-                  placeholder="Nume categorie nouă"
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                />
+                <Input id="categoryName" placeholder="Nume categorie nouă" value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} />
               </div>
               <Button type="submit" className="self-end">
                 Adaugă Categorie
@@ -92,34 +89,21 @@ const Categories = () => {
           </Card>
 
           <div className="grid gap-6">
-            {sortedCategories.map((category) => {
-              const categoryFlowers = flowers
-                .filter(flower => flower.categoryId === category.id)
-                .sort((a, b) => a.name.localeCompare(b.name));
-
-              return (
-                <Card key={category.id} className="p-6">
+            {sortedCategories.map(category => {
+            const categoryFlowers = flowers.filter(flower => flower.categoryId === category.id).sort((a, b) => a.name.localeCompare(b.name));
+            return <Card key={category.id} className="">
                   <h3 className="font-medium text-lg mb-4">{category.name}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {categoryFlowers.map(flower => (
-                      <div key={flower.id} className="flex items-center gap-3 bg-white rounded-lg p-3 border">
-                        <img 
-                          src={flower.image} 
-                          alt={flower.name}
-                          className="w-12 h-12 object-cover rounded"
-                        />
+                    {categoryFlowers.map(flower => <div key={flower.id} className="flex items-center gap-3 bg-white rounded-lg p-3 border">
+                        <img src={flower.image} alt={flower.name} className="w-12 h-12 object-cover rounded" />
                         <span className="text-sm truncate flex-1">{flower.name}</span>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Categories;
