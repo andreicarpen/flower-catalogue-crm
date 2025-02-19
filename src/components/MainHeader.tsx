@@ -89,9 +89,7 @@ export const MainHeader = ({
               <Input type="search" placeholder="Caută..." className="max-w-sm" onChange={e => onSearchChange?.(e.target.value)} />
             </div>}
 
-          {showFilter && <Button variant="ghost" size="icon">
-              <Filter className="h-5 w-5" />
-            </Button>}
+          {showFilter}
         </div>
       </div>
     </header>;
