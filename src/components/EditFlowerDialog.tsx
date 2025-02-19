@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Flower } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useToast } from "@/components/ui/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 interface EditFlowerDialogProps {
   flower: Flower;
   open: boolean;
@@ -13,6 +15,7 @@ interface EditFlowerDialogProps {
   onUpdate: (id: string, quantity: number) => void;
   onDelete?: (id: string) => void;
 }
+
 const EditFlowerDialog = ({
   flower,
   open,
@@ -20,19 +23,17 @@ const EditFlowerDialog = ({
   onUpdate,
   onDelete
 }: EditFlowerDialogProps) => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const isMobile = useIsMobile();
   const [quantity, setQuantity] = useState(flower.quantity.toString());
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
-  // Reset quantity when dialog opens/closes
   useEffect(() => {
     if (open) {
       setQuantity(flower.quantity.toString());
     }
   }, [open, flower.quantity]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newQuantity = parseInt(quantity);
@@ -51,29 +52,51 @@ const EditFlowerDialog = ({
       description: "Cantitatea a fost actualizată cu succes"
     });
   };
+
   const handleCancel = () => {
     setQuantity(flower.quantity.toString());
     onOpenChange(false);
   };
-  return <>
-      <Dialog open={open} onOpenChange={newOpen => {
-      if (!newOpen) {
-        setQuantity(flower.quantity.toString());
-      }
-      onOpenChange(newOpen);
-    }}>
+
+  return (
+    <>
+      <Dialog open={open} onOpenChange={(newOpen) => {
+        if (!newOpen) {
+          setQuantity(flower.quantity.toString());
+        }
+        onOpenChange(newOpen);
+      }}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{flower.name}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-[32px]">
-            <Input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} min="0" placeholder="Cantitate nouă" className="my-[10px]" />
-            <Button type="button" variant="destructive" onClick={() => setShowDeleteAlert(true)} className="w-full text-black bg-zinc-100 hover:bg-red-300">
+            <div className="space-y-2">
+              <label htmlFor="quantity" className="text-sm font-medium">
+                Cantitate
+              </label>
+              <Input
+                id="quantity"
+                type="number"
+                value={quantity}
+                onChange={e => setQuantity(e.target.value)}
+                min="0"
+                placeholder="Cantitate nouă"
+              />
+            </div>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => setShowDeleteAlert(true)}
+              className="w-full text-black bg-zinc-100 hover:bg-red-300"
+            >
               Șterge floarea
             </Button>
           </form>
           <DialogFooter className="sm:justify-end gap-2">
-            
+            <Button type="button" variant="outline" onClick={handleCancel}>
+              Anulează
+            </Button>
             <Button onClick={handleSubmit}>
               Actualizează Cantitatea
             </Button>
@@ -91,18 +114,23 @@ const EditFlowerDialog = ({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Nu</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => {
-            if (onDelete) {
-              onDelete(flower.id);
-              setShowDeleteAlert(false);
-              onOpenChange(false);
-            }
-          }}>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => {
+                if (onDelete) {
+                  onDelete(flower.id);
+                  setShowDeleteAlert(false);
+                  onOpenChange(false);
+                }
+              }}
+            >
               Da
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>;
+    </>
+  );
 };
+
 export default EditFlowerDialog;

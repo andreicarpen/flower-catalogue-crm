@@ -194,6 +194,15 @@ const Index = () => {
           )}
 
           <div className="flex gap-2 ml-auto">
+            {isMobile && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsFilterOpen(true)}
+              >
+                <Filter className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               variant={viewMode === "grid" ? "default" : "outline"}
               size="icon"
