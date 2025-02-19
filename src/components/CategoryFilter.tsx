@@ -15,7 +15,7 @@ const CategoryFilter = ({
       <div className="w-full  py-0 pb-2 px-0 pl-1">
         <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex space-x-1">
-            <Button variant={selectedCategory === null ? "default" : "outline"} onClick={() => onSelectCategory(null)} className="shrink-0 text-xs p-2 py-[8px] px-[10px]">
+            <Button variant={selectedCategory === null ? "default" : "outline"} onClick={() => onSelectCategory(null)} className="shrink-0 text-xs p-2 py-[8px] px-[10px] rounded-full">
               Toate
             </Button>
             {categories.sort((a, b) => a.name.localeCompare(b.name)).map(category => <Button key={category.id} variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => onSelectCategory(category.id)} className="shrink-0 text-xs p-2 px-[10px] !py-2 rounded-full">
