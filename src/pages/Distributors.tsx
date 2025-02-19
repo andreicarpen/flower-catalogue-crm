@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Distributor } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -64,44 +63,58 @@ const Distributors = () => {
     }
   };
 
+  const sortedDistributors = [...distributors].sort((a, b) => 
+    a.name.localeCompare(b.name)
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <MainHeader showBackButton title="Distribuitori" />
-      <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
-        <div className="space-y-4 sm:space-y-6">
-          <Card className="p-4 sm:p-6">
-            <form onSubmit={handleAddDistributor} className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-              <Input
-                placeholder="Nume distribuitor nou"
-                value={newDistributorName}
-                onChange={(e) => setNewDistributorName(e.target.value)}
-                className="flex-1"
-              />
-              <Button type="submit" className="w-full sm:w-auto">Adaugă Distribuitor</Button>
+      <main className="max-w-7xl mx-auto px-4 py-6">
+        <div className="space-y-6">
+          <Card className="p-6">
+            <form onSubmit={handleAddDistributor} className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 space-y-2">
+                <label htmlFor="distributorName" className="text-sm font-medium">
+                  Nume distribuitor
+                </label>
+                <Input
+                  id="distributorName"
+                  placeholder="Nume distribuitor nou"
+                  value={newDistributorName}
+                  onChange={(e) => setNewDistributorName(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="self-end">
+                Adaugă Distribuitor
+              </Button>
             </form>
           </Card>
 
-          <div className="grid gap-4">
-            {distributors.map((distributor) => (
-              <Card key={distributor.id} className="p-4">
-                <h3 className="font-medium text-lg mb-4">{distributor.name}</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {flowers
-                    .filter(flower => flower.distributorId === distributor.id)
-                    .map(flower => (
-                      <div key={flower.id} className="flex items-center gap-2 bg-white rounded-lg p-2 border">
+          <div className="grid gap-6">
+            {sortedDistributors.map((distributor) => {
+              const distributorFlowers = flowers
+                .filter(flower => flower.distributorId === distributor.id)
+                .sort((a, b) => a.name.localeCompare(b.name));
+
+              return (
+                <Card key={distributor.id} className="p-6">
+                  <h3 className="font-medium text-lg mb-4">{distributor.name}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {distributorFlowers.map(flower => (
+                      <div key={flower.id} className="flex items-center gap-3 bg-white rounded-lg p-3 border">
                         <img 
                           src={flower.image} 
                           alt={flower.name}
                           className="w-12 h-12 object-cover rounded"
                         />
-                        <span className="text-sm truncate">{flower.name}</span>
+                        <span className="text-sm truncate flex-1">{flower.name}</span>
                       </div>
-                    ))
-                  }
-                </div>
-              </Card>
-            ))}
+                    ))}
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </main>
