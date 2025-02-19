@@ -5,12 +5,11 @@ import { MainHeader } from "@/components/MainHeader";
 import FlowerGrid from "@/components/FlowerGrid";
 import { useFlowerData } from "@/hooks/use-flower-data";
 import { Button } from "@/components/ui/button";
-import { Plus, Grid, List, Search, Filter } from "lucide-react";
+import { Plus, Grid, List, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CategoryFilter from "@/components/CategoryFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
@@ -111,40 +110,57 @@ const Index = () => {
       }
     });
 
+  const sortOptions = [
+    { value: "date", label: "Data adăugării" },
+    { value: "name", label: "Nume" },
+    { value: "distributor", label: "Distribuitor" },
+    { value: "category", label: "Categorie" },
+  ];
+
   const FilterContent = () => (
-    <div className="space-y-4 py-4">
-      <div className="space-y-2">
+    <div className="space-y-6 py-4">
+      <div className="space-y-4">
         <label className="text-sm font-medium">Distribuitor</label>
-        <Select value={selectedDistributor || "all"} onValueChange={(value) => setSelectedDistributor(value === "all" ? null : value)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Distribuitor" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toți distribuitorii</SelectItem>
-            {distributors
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map(distributor => (
-                <SelectItem key={distributor.id} value={distributor.id}>
-                  {distributor.name}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={selectedDistributor === null ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedDistributor(null)}
+            className="rounded-full"
+          >
+            Toți distribuitorii
+          </Button>
+          {distributors
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(distributor => (
+              <Button
+                key={distributor.id}
+                variant={selectedDistributor === distributor.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedDistributor(distributor.id)}
+                className="rounded-full"
+              >
+                {distributor.name}
+              </Button>
+            ))}
+        </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-4">
         <label className="text-sm font-medium">Sortare</label>
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Sortează după" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="date">Data adăugării</SelectItem>
-            <SelectItem value="name">Nume</SelectItem>
-            <SelectItem value="distributor">Distribuitor</SelectItem>
-            <SelectItem value="category">Categorie</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-wrap gap-2">
+          {sortOptions.map(option => (
+            <Button
+              key={option.value}
+              variant={sortBy === option.value ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortBy(option.value)}
+              className="rounded-full"
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -184,45 +200,50 @@ const Index = () => {
                   <SelectValue placeholder="Sortează după" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="date">Data adăugării</SelectItem>
-                  <SelectItem value="name">Nume</SelectItem>
-                  <SelectItem value="distributor">Distribuitor</SelectItem>
-                  <SelectItem value="category">Categorie</SelectItem>
+                  {sortOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           )}
 
-          <div className="flex gap-2 ml-auto">
+          <div className="flex items-center gap-4">
             {isMobile && (
               <Button
                 variant="outline"
-                size="icon"
+                size="sm"
                 onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-2"
               >
                 <Filter className="h-4 w-4" />
+                <span>Filtre</span>
               </Button>
             )}
-            <Button
-              variant={viewMode === "grid" ? "default" : "outline"}
-              size="icon"
-              onClick={() => setViewMode("grid")}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === "list" ? "default" : "outline"}
-              size="icon"
-              onClick={() => setViewMode("list")}
-            >
-              <List className="h-4 w-4" />
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="icon"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="icon"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
         {isMobile && (
           <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-            <SheetContent side="bottom" className="h-[40vh]">
+            <SheetContent side="bottom" className="h-[60vh]">
               <SheetHeader>
                 <SheetTitle>Filtre</SheetTitle>
               </SheetHeader>
