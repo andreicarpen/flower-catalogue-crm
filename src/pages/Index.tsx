@@ -160,8 +160,8 @@ const Index = () => {
       
       <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
       
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
+      <main className="max-w-7xl mx-auto py-6">
+        <div className="px-4 flex items-center justify-between mb-6">
           {isMobile ? <>
               <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(true)} className="flex items-center gap-2">
                 <Filter className="h-4 w-4" />
@@ -220,7 +220,7 @@ const Index = () => {
             </SheetContent>
           </Sheet>}
 
-        <div className={viewMode === "grid" ? "" : "divide-y divide-gray-200 bg-white"}>
+        <div className={viewMode === "grid" ? "px-4" : "divide-y divide-gray-200"}>
           {viewMode === "grid" ? (
             <FlowerGrid 
               flowers={sortedAndFilteredFlowers} 
@@ -234,7 +234,7 @@ const Index = () => {
               const distributor = distributors.find(d => d.id === flower.distributorId);
               const category = categories.find(c => c.id === flower.categoryId);
               return (
-                <div key={flower.id} className="flex items-center gap-3 px-4 py-3">
+                <div key={flower.id} className="flex items-center gap-3 py-3">
                   <img src={flower.image} alt={flower.name} className="w-16 h-16 object-cover rounded" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
