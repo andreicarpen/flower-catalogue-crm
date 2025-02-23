@@ -11,6 +11,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 const Index = () => {
   const {
     toast
@@ -28,6 +29,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   const handleUpdateQuantity = async (id: string, quantity: number) => {
     try {
       const {
@@ -49,6 +51,7 @@ const Index = () => {
       });
     }
   };
+
   const handleDeleteFlower = async (id: string) => {
     try {
       const {
@@ -77,6 +80,7 @@ const Index = () => {
       });
     }
   };
+
   const sortedAndFilteredFlowers = flowers.filter(flower => {
     const matchesCategory = !selectedCategory || flower.categoryId === selectedCategory;
     const matchesDistributor = !selectedDistributor || flower.distributorId === selectedDistributor;
@@ -103,6 +107,7 @@ const Index = () => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
   });
+
   const sortOptions = [{
     value: "date",
     label: "Data adăugării"
@@ -116,6 +121,7 @@ const Index = () => {
     value: "category",
     label: "Categorie"
   }];
+
   const FilterContent = () => <div className="space-y-6 py-4">
       <div className="space-y-4">
         <label className="text-sm font-medium">Distribuitor</label>
@@ -147,7 +153,9 @@ const Index = () => {
         </div>
       </div>
     </div>;
-  return <div className="min-h-screen bg-gray-50">
+
+  return (
+    <div className="min-h-screen bg-gray-50">
       <MainHeader showSearch onSearchChange={setSearchQuery} showFilter />
       
       <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
@@ -212,35 +220,47 @@ const Index = () => {
             </SheetContent>
           </Sheet>}
 
-        <div className={viewMode === "grid" ? "" : "space-y-4"}>
-          {viewMode === "grid" ? <FlowerGrid flowers={sortedAndFilteredFlowers} distributors={distributors} categories={categories} onUpdateQuantity={handleUpdateQuantity} onDeleteFlower={handleDeleteFlower} /> : sortedAndFilteredFlowers.map(flower => {
-          const distributor = distributors.find(d => d.id === flower.distributorId);
-          const category = categories.find(c => c.id === flower.categoryId);
-          return <div key={flower.id} className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm">
-                  <img src={flower.image} alt={flower.name} className="w-16 h-16 object-cover rounded" />
+        <div className={viewMode === "grid" ? "" : "space-y-2"}>
+          {viewMode === "grid" ? (
+            <FlowerGrid 
+              flowers={sortedAndFilteredFlowers} 
+              distributors={distributors} 
+              categories={categories} 
+              onUpdateQuantity={handleUpdateQuantity} 
+              onDeleteFlower={handleDeleteFlower} 
+            />
+          ) : (
+            sortedAndFilteredFlowers.map(flower => {
+              const distributor = distributors.find(d => d.id === flower.distributorId);
+              const category = categories.find(c => c.id === flower.categoryId);
+              return (
+                <div key={flower.id} className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm">
+                  <img src={flower.image} alt={flower.name} className="w-12 h-12 object-cover rounded" />
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium">{flower.name}</h3>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      <span className="text-sm text-gray-500">
-                        {distributor?.name}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {category?.name}
-                      </span>
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-medium text-sm truncate">{flower.name}</h3>
+                      <div className="text-sm font-medium text-gray-900">
+                        {flower.quantity}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <span className="truncate">{distributor?.name}</span>
+                      <span>•</span>
+                      <span className="truncate">{category?.name}</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-medium">Cantitate</div>
-                    <div className="text-gray-500">{flower.quantity}</div>
-                  </div>
-                </div>;
-        })}
+                </div>
+              );
+            })
+          )}
         </div>
       </main>
 
       <Button onClick={() => navigate('/add')} className="fixed bottom-6 right-6 rounded-full w-16 h-16 shadow-lg bg-primary hover:bg-primary/90">
         <Plus className="h-8 w-8" />
       </Button>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
