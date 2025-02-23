@@ -206,14 +206,18 @@ const Index = () => {
             </>}
         </div>
 
-        {isMobile && <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-            <SheetContent side="bottom" className="h-[60vh]">
-              <SheetHeader>
+        {isMobile && (
+          <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+            <SheetContent side="bottom" className="h-[90vh] p-0">
+              <SheetHeader className="px-6 py-4">
                 <SheetTitle>Filtre</SheetTitle>
               </SheetHeader>
-              <FilterContent />
+              <div className="overflow-y-auto flex-1 px-6">
+                <FilterContent />
+              </div>
             </SheetContent>
-          </Sheet>}
+          </Sheet>
+        )}
 
         <div className={viewMode === "grid" ? "px-4" : "divide-y divide-gray-200"}>
           {viewMode === "grid" ? <FlowerGrid flowers={sortedAndFilteredFlowers} distributors={distributors} categories={categories} onUpdateQuantity={handleUpdateQuantity} onDeleteFlower={handleDeleteFlower} /> : sortedAndFilteredFlowers.map(flower => {
