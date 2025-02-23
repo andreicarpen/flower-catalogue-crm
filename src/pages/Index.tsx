@@ -5,29 +5,27 @@ import { MainHeader } from "@/components/MainHeader";
 import FlowerGrid from "@/components/FlowerGrid";
 import { useFlowerData } from "@/hooks/use-flower-data";
 import { Button } from "@/components/ui/button";
-import { Plus, Grid, List, Filter } from "lucide-react";
+import { Plus, Grid, List, Filter, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CategoryFilter from "@/components/CategoryFilter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import EditFlowerDialog from "@/components/EditFlowerDialog";
+
 const Index = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const {
-    flowers,
-    distributors,
-    categories
-  } = useFlowerData();
+  const { flowers, distributors, categories } = useFlowerData();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDistributor, setSelectedDistributor] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>("date");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [editingFlower, setEditingFlower] = useState<string | null>(null);
+
   const handleUpdateQuantity = async (id: string, quantity: number) => {
     try {
       const {
@@ -49,6 +47,7 @@ const Index = () => {
       });
     }
   };
+
   const handleDeleteFlower = async (id: string) => {
     try {
       const {
@@ -77,6 +76,7 @@ const Index = () => {
       });
     }
   };
+
   const sortedAndFilteredFlowers = flowers.filter(flower => {
     const matchesCategory = !selectedCategory || flower.categoryId === selectedCategory;
     const matchesDistributor = !selectedDistributor || flower.distributorId === selectedDistributor;
@@ -103,6 +103,7 @@ const Index = () => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
   });
+
   const sortOptions = [{
     value: "date",
     label: "Data adăugării"
@@ -116,6 +117,7 @@ const Index = () => {
     value: "category",
     label: "Categorie"
   }];
+
   const FilterContent = () => <div className="space-y-6 py-4">
       <div className="space-y-4">
         <label className="text-sm font-medium">Distribuitor</label>
@@ -147,6 +149,7 @@ const Index = () => {
         </div>
       </div>
     </div>;
+
   return <div className="min-h-screen bg-gray-50">
       <MainHeader showSearch onSearchChange={setSearchQuery} showFilter />
       
@@ -221,8 +224,18 @@ const Index = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-medium text-sm truncate">{flower.name}</h3>
-                      <div className="text-sm font-medium text-gray-900">
-                        {flower.quantity}
+                      <div className="flex items-center gap-2">
+                        <div className="text-sm font-medium text-gray-900">
+                          {flower.quantity}
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8" 
+                          onClick={() => setEditingFlower(flower.id)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-500">
@@ -239,6 +252,17 @@ const Index = () => {
       <Button onClick={() => navigate('/add')} className="fixed bottom-6 right-6 rounded-full w-16 h-16 shadow-lg bg-primary hover:bg-primary/90">
         <Plus className="h-8 w-8" />
       </Button>
+
+      {editingFlower && (
+        <EditFlowerDialog
+          flower={flowers.find(f => f.id === editingFlower)!}
+          open={!!editingFlower}
+          onOpenChange={(open) => !open && setEditingFlower(null)}
+          onUpdate={handleUpdateQuantity}
+          onDelete={handleDeleteFlower}
+        />
+      )}
     </div>;
 };
+
 export default Index;
