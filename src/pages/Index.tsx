@@ -220,7 +220,7 @@ const Index = () => {
             </SheetContent>
           </Sheet>}
 
-        <div className={viewMode === "grid" ? "" : "space-y-2"}>
+        <div className={viewMode === "grid" ? "" : "divide-y divide-gray-200 bg-white"}>
           {viewMode === "grid" ? (
             <FlowerGrid 
               flowers={sortedAndFilteredFlowers} 
@@ -234,8 +234,8 @@ const Index = () => {
               const distributor = distributors.find(d => d.id === flower.distributorId);
               const category = categories.find(c => c.id === flower.categoryId);
               return (
-                <div key={flower.id} className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm">
-                  <img src={flower.image} alt={flower.name} className="w-12 h-12 object-cover rounded" />
+                <div key={flower.id} className="flex items-center gap-3 px-4 py-3">
+                  <img src={flower.image} alt={flower.name} className="w-16 h-16 object-cover rounded" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-medium text-sm truncate">{flower.name}</h3>
