@@ -208,11 +208,11 @@ const Index = () => {
 
         {isMobile && (
           <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-            <SheetContent side="bottom" className="h-[90vh] p-0">
-              <SheetHeader className="px-6 py-4">
+            <SheetContent side="bottom" className="max-h-[80vh]">
+              <SheetHeader>
                 <SheetTitle>Filtre</SheetTitle>
               </SheetHeader>
-              <div className="overflow-y-auto flex-1 px-6">
+              <div className="overflow-y-auto mt-2">
                 <FilterContent />
               </div>
             </SheetContent>
